@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import api from '../utils/api';
 import {
   PlusIcon,
@@ -7,12 +6,12 @@ import {
   PencilIcon,
   CheckIcon,
   XMarkIcon,
-  ChartBarIcon,
   LightBulbIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
   PlayIcon,
-  AcademicCapIcon
+  AcademicCapIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 

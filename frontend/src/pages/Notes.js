@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import {
-  PlusIcon,
   TrashIcon,
   MagnifyingGlassIcon,
   DocumentTextIcon,
@@ -26,34 +25,34 @@ const Notes = () => {
   });
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchNotes();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    fetchNotes();
-  }, [subjectFilter]);
-
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
     try {
-      const params = new URLSearchParams();
-      if (searchQuery) params.append('search', searchQuery);
-      if (subjectFilter) params.append('subject', subjectFilter);
-
-      const response = await api.get(`/notes?${params.toString()}`);
+      const response = await api.get('/notes', {
+        params: {
+          search: searchQuery || undefined,
+          subject: subjectFilter || undefined
+        }
+      });
       if (response.data.success) {
         setNotes(response.data.notes);
       }
     } catch (error) {
+      // Only show error toast if not the initial empty load or specifically failed
+      console.error(error);
       toast.error('Failed to load notes');
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery, subjectFilter]);
+
+  useEffect(() => {
+    const delay = searchQuery ? 300 : 0;
+    const timer = setTimeout(() => {
+      fetchNotes();
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [fetchNotes, searchQuery]);
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -201,7 +200,7 @@ const Notes = () => {
                   {note.subject}
                 </span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {note.fileType.toUpperCase()}
+                  {note.fileType?.toUpperCase()}
                 </span>
               </div>
 
