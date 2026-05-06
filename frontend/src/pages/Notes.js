@@ -46,13 +46,8 @@ const Notes = () => {
   }, [searchQuery, subjectFilter]);
 
   useEffect(() => {
-    const delay = searchQuery ? 300 : 0;
-    const timer = setTimeout(() => {
-      fetchNotes();
-    }, delay);
-
-    return () => clearTimeout(timer);
-  }, [fetchNotes, searchQuery]);
+    fetchNotes();
+  }, [fetchNotes]);
 
   const handleUpload = async (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import {
   PlusIcon,
@@ -26,11 +26,7 @@ const Timetable = () => {
     color: COLORS[0]
   });
 
-  useEffect(() => {
-    fetchTimetable();
-  }, []);
-
-  const fetchTimetable = async () => {
+  const fetchTimetable = useCallback(async () => {
     try {
       const response = await api.get('/timetable');
       if (response.data.success) {
@@ -41,7 +37,11 @@ const Timetable = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTimetable();
+  }, [fetchTimetable]);
 
   const handleAddEntry = async (e) => {
     e.preventDefault();
